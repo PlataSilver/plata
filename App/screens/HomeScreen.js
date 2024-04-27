@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/core';
 import React, { useState } from 'react';
-import { KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, View, Alert } from 'react-native';
 import { auth } from '../firebase';
 
 const HomeScreen = () => {
@@ -19,8 +19,19 @@ const HomeScreen = () => {
   const handleSend = () => {
     // Handle sending the amount (logic specific to your app)
     console.log('Sending amount:', amount);
+
+
+    if (amount.trim() === '' || parseFloat(amount.trim()) <= 0) {
+      // Display error message if amount is empty or non-positive
+      Alert.alert('Please enter a valid amount', 'Enter the amount to send');
+      return; // Prevent navigation if validation fails
+    }
     const dataToSend = { amount}
-    navigation.navigate('Transaction', {data: dataToSend}); //
+    navigation.navigate('TransactionSend', {data: dataToSend}); //
+  };
+  const handleReceive = () => {
+    console.log('Receiving');
+    navigation.navigate('TransactionReceive'); //
   };
 
   return (
@@ -41,6 +52,9 @@ const HomeScreen = () => {
         />
         <TouchableOpacity onPress={handleSend} style={styles.button}>
           <Text style={styles.buttonText}>Send</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={handleReceive} style={styles.button}>
+          <Text style={styles.buttonText}>Receive</Text>
         </TouchableOpacity>
       </View>
     </KeyboardAvoidingView>
@@ -70,7 +84,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     paddingVertical: 15,
     borderRadius: 10,
-    marginBottom: 5,
+    marginBottom: 20,
     width: '80%',
   },
   button: {
@@ -79,6 +93,7 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
     borderRadius: 10,
     alignItems: 'center',
+    marginBottom: 20,
     width: '80%'
   },
   buttonText: {

@@ -3,6 +3,7 @@ import { View, Text, Image, StyleSheet } from 'react-native';
 import { useRoute } from '@react-navigation/native';
 // import { useAssets } from 'react-native-assets';
 
+
 const TransactionScreen = () => {
   // const [assets] = useAssets([require('./assets/nfc-animation.gif')]);
   const route = useRoute();
