@@ -1,5 +1,35 @@
 # plata
 
+Super Duper Pay is a peer-to-peer payment app that uses NFC and QR codes for transactions.
+
+## Figma Design
+https://www.figma.com/file/N99UQ5fEPvgY2JRmFeytps/Untitled?type=design&node-id=7%3A1097&mode=design&t=LbqmfYtvpRCWoHxJ-1
+
+## Features
+
+- **Login/Sign Up**: Secure access to personal accounts.
+- **NFC and QR Code Support**: Enables transactions via NFC and QR codes. {https://medium.com/@diliplohar204/nfc-integration-made-easy-exploring-react-native-nfc-manager-for-seamless-mobile-communication-65bf56f31398}
+- **Transaction Amount Input**: Allows users to specify the amount to send.
+- **Confirmation via Biometrics**: Ensures secure transactions with fingerprint or face scan confirmation.
+
+## Additional Features
+
+- **User Profile**: View and edit personal profile information.
+- **Transaction History**: Keep track of past transactions.
+- **Security Features**: Additional security measures like two-factor authentication, data encryption, and secure communication protocols.
+- **Notifications**: Stay updated with successful transactions, received payments, or account changes.
+- **Error Handling and Feedback**: User-friendly error messages and feedback for smooth app usage.
+- **Help/Support**: Access help or customer support as needed.
+- **Settings**: Customize app settings like notification preferences, security settings, etc.
+- **Integration with Bank Accounts or Credit Cards**: Add or withdraw funds with ease.
+
+## Future Improvements
+
+- TODO: List any planned features or improvements here.
+
+## Getting Started
+
+- TODO: Instructions for setting up the project locally.
 
 ## Minimum requirements
 - react-native >= 0.63.0
@@ -30,3 +60,7 @@ npm
 ```npm install @react-navigation/native-stack```
 
 💡 @react-navigation/native-stack depends on react-native-screens and the other libraries that we installed in Getting started. If you haven't installed those yet, head over to that page and follow the installation instructions.
+
+## License
+
+- Information about the project's license.
