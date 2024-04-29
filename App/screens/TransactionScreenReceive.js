@@ -1,130 +1,106 @@
-import React, { Component } from 'react';
-import { TouchableOpacity, View, Text, Image, StyleSheet, Button, ActivityIndicator } from 'react-native';
-import { useRoute } from '@react-navigation/native';
-import NfcManager, { NfcTech, Ndef } from 'react-native-nfc-manager';
+import React, { useState, useEffect } from 'react';
+import { View, Text, Button, StyleSheet, ActivityIndicator  } from 'react-native';
+import NfcManager, { NdefRecord, NfcTech } from 'react-native-nfc-manager';
 
-class TransactionScreen extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      isLoading: true,
-      receivedData: null,
-    };
-  }
+const TransactionScreenReceive = () => {
+  const [isLoading, setIsLoading] = useState(true);
+  const [receivedamount, setReceivedamount] = useState(null);
 
-  componentDidMount() {
-    this.setState({ isLoading: true });
-    this.startNfc();
-  }
-
-  componentWillUnmount() {
-    this.stopNfc();
-  }
-
-  async startNfc() {
+  const startNfcListener = async () => {
     try {
-      await NfcManager.start();
-      this.setState({ isLoading: false });
-    } catch (ex) {
-      console.warn('Error starting NFC', ex);
-      this.setState({ isLoading: false });
-    }
-  }
-
-  async stopNfc() {
-    try {
-      await NfcManager.stop();
-    } catch (ex) {
-      console.warn('Error stopping NFC', ex);
-    }
-  }
-
-  async writeNdef({ type, value }) {
-    let result = false;
-
-    try {
+      // Request NDEF technology
       await NfcManager.requestTechnology(NfcTech.Ndef);
 
-      const bytes = Ndef.encodeMessage([Ndef.textRecord(value)]);
+      // Listen for incoming NDEF messages
+      NfcManager.ndefHandler.on('message', (msg) => {
+        const records = msg.records;
+        if (records && records.length > 0) {
+          // Check if the first record is a text record
+          const firstRecord = records[0];
+          if (firstRecord.type === NdefRecord.Types.TEXT) {
+            try {
+              // Decode the text payload assuming UTF-8 encoding
+              const decodedText = NdefRecord.text.decodePayload(firstRecord.payload);
+              setReceivedamount(decodedText);
+              console.log('Received amount:', decodedText);
+              // Handle the received amount (e.g., display, save, use for further actions)
+            } catch (error) {
+              console.warn('Error decoding text record:', error);
+              // Handle potential decoding errors gracefully
+            }
+          } else {
+            console.warn('Received non-text NDEF record:', firstRecord.type);
+            // Handle non-text records if necessary (you may not need this)
+          }
+        } else {
+          console.warn('Empty NDEF message received.');
+        }
+      });
 
-      if (bytes) {
-        await NfcManager.ndefHandler.writeNdefMessage(bytes);
-        result = true;
-      }
-      alert('Tag Written!');
-      // Navigate or do something else after writing the tag
-    } catch (ex) {
-      console.warn(ex);
-    } finally {
-      NfcManager.cancelTechnologyRequest();
+      setIsLoading(false);
+      console.log('Listening for NFC messages...');
+    } catch (error) {
+      console.warn('Error requesting NDEF technology:', error);
+      // Handle potential errors during technology request
     }
+  };
 
-    return result;
-  }
-
-  render() {
-    const { isLoading, receivedData } = this.state;
-
-    if (isLoading) {
-      return (
-        <View style={styles.container}>
-          <ActivityIndicator />
-        </View>
-      );
+  const stopNfcListener = async () => {
+    try {
+      await NfcManager.cancelTechnologyRequest();
+      console.log('NFC listener stopped.');
+    } catch (error) {
+      console.warn('Error stopping NFC listener:', error);
+      // Handle potential errors during listener cancellation
     }
+  };
 
-    return (
-      <View style={styles.container}>
-        <Text style={styles.title}>Receive Money</Text>
-        <Text style={styles.instructions}>
-          1. Bring the other device closer to this phone.
-          {'\n'}
-          2. Turn on NFC on both devices.
-          {'\n'}
-          3. A prompt will appear on the other device asking to send money.
-        </Text>
-        <TouchableOpacity 
-          onPress={() => this.writeNdef({ type: 'TEXT', value: 'Your email or data here' })} 
-          style={styles.button} >
-          
-            <Text style={styles.buttonText}>Receive</Text>
-          
-          </TouchableOpacity>
-      </View>
-    );
-  }
-}
+  useEffect(() => {
+    startNfcListener();
+
+    // Cleanup listener on unmount
+    return () => stopNfcListener();
+  }, []);
+
+  return (
+    <View style={styles.container}>
+      <Text style={styles.title}>Receive amount via NFC</Text>
+      {isLoading ? (
+        <ActivityIndicator />
+      ) : (
+        <>
+          {receivedamount ? (
+            <Text style={styles.amountText}>Received amount: {receivedamount}</Text>
+          ) : (
+            <Text style={styles.instructions}>
+              Bring the other device closer and tap their phone to send a amount.
+            </Text>
+          )}
+          <Button title="Stop Listening" onPress={stopNfcListener} disabled={!isLoading} />
+        </>
+      )}
+    </View>
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 20,
   },
   title: {
     fontSize: 24,
-    fontWeight: 'bold',
     marginBottom: 20,
-  },  
-  button: {
-    backgroundColor: '#0782F9',
-    paddingHorizontal: 15,
-    paddingVertical: 15,
-    borderRadius: 10,
-    alignItems: 'center',
-    marginBottom: 20,
-    width: '80%'
-  },
-  buttonText: {
-    color: 'white',
-    fontWeight: '700',
-    fontSize: 16,
   },
   instructions: {
     textAlign: 'center',
-    lineHeight: 20,
+    marginBottom: 20,
+  },
+  amountText: {
+    fontSize: 18,
+    marginBottom: 20,
   },
 });
 
-export default TransactionScreen;
+export default TransactionScreenReceive;
