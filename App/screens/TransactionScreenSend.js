@@ -2,14 +2,15 @@ import React from 'react';
 import { View, Text, Image, StyleSheet } from 'react-native';
 import { useRoute } from '@react-navigation/native';
 // import { useAssets } from 'react-native-assets';
-
+import NfcManager, {NfcTech, Ndef} from 'react-native-nfc-manager';
+import AsyncStorage from '@react-native-async-storage/async-storage'; // Remembering the user
 
 const TransactionScreen = () => {
   // const [assets] = useAssets([require('./assets/nfc-animation.gif')]);
   const route = useRoute();
   const receivedData = route.params?.data; // Use optional chaining to handle missing data
   console.log('Received data:', receivedData);
-
+  
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Send Money</Text>
