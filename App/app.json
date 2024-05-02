@@ -18,14 +18,22 @@
       "supportsTablet": true
     },
     "android": {
-      "permissions": ["android.permission.DETECT_SCREEN_CAPTURE"],
+      "permissions": [
+        "android.permission.DETECT_SCREEN_CAPTURE"
+      ],
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.yshxy.plata"
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "056fb30b-6bec-4a07-b7d9-e4334d91ff05"
+      }
     }
   }
 }

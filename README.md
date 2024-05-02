@@ -30,3 +30,7 @@ npm
 ```npm install @react-navigation/native-stack```
 
 💡 @react-navigation/native-stack depends on react-native-screens and the other libraries that we installed in Getting started. If you haven't installed those yet, head over to that page and follow the installation instructions.
+
+
+
+https://expo.dev/artifacts/eas/9dR1jKMt7TXd8hHvckQ9wJ.apk
